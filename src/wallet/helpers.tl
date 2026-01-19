@@ -1,6 +1,7 @@
 require "shared.types"
 require "wallet.types"
 local shared_helpers = require "shared.helpers"
+local getters = require "wallet.getters"
 
 local mod = {}
 
@@ -18,6 +19,7 @@ end
 
 local function requireValidThreshold(threshold: string): nil
     shared_helpers.requirePositive(threshold, "new smart wallet threshold value")
+    assert(tonumber(threshold) <= getters.getActiveAdminsCount(), "threshold exceeds active admins")
 end
 
 

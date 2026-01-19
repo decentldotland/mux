@@ -128,8 +128,128 @@ end
 
 do
 local _ENV = _ENV
+package.preload[ "wallet.getters" ] = function( ... ) local arg = _G.arg;
+require("shared.types")
+require("wallet.types")
+
+local mod = {}
+
+local function getActiveAdmins()
+   local admins_clone = {}
+   for _, admin in pairs(Admins) do
+      if admin.active then
+         table.insert(admins_clone, admin)
+      end
+   end
+
+   return admins_clone
+end
+
+local function getActiveAdminsCount()
+   local actives_count = 0
+
+   for _, admin in pairs(Admins) do
+      if admin.active then
+         actives_count = actives_count + 1
+      end
+   end
+
+   return actives_count
+end
+
+
+mod.getActiveAdmins = getActiveAdmins
+mod.getActiveAdminsCount = getActiveAdminsCount
+
+return mod
+end
+end
+
+do
+local _ENV = _ENV
+package.preload[ "wallet.helpers" ] = function( ... ) local arg = _G.arg;
+require("shared.types")
+require("wallet.types")
+local shared_helpers = require("shared.helpers")
+local getters = require("wallet.getters")
+
+local mod = {}
+
+local function isActiveAdmin(address)
+   return (Admins[address] and Admins[address].active)
+end
+
+local function requireActiveAdmin(address)
+   assert(isActiveAdmin(address), "active not found or removed")
+end
+
+local function requireConfiguredWallet()
+   assert(Configured, "smart wallet not configured yet")
+end
+
+local function requireValidThreshold(threshold)
+   shared_helpers.requirePositive(threshold, "new smart wallet threshold value")
+   assert(tonumber(threshold) <= getters.getActiveAdminsCount(), "threshold exceeds active admins")
+end
+
+
+mod.isActiveAdmin = isActiveAdmin
+mod.requireActiveAdmin = requireActiveAdmin
+mod.requireConfiguredWallet = requireConfiguredWallet
+mod.requireValidThreshold = requireValidThreshold
+
+return mod
+end
+end
+
+do
+local _ENV = _ENV
 package.preload[ "wallet.main" ] = function( ... ) local arg = _G.arg;
 
+end
+end
+
+do
+local _ENV = _ENV
+package.preload[ "wallet.types" ] = function( ... ) local arg = _G.arg;
+require("shared.types")
+
+Nonce = Nonce or 0
+Threshold = Threshold or 1
+Variant = Variant or "0.1.0"
+Name = Name or "treasury.ao-multisig"
+Configured = Configured or false
+
+Status = {}
+
+Admin = {}
+
+
+
+
+
+
+
+Decision = {}
+
+
+
+
+Proposal = {}
+
+
+
+
+
+
+
+
+
+
+Admins = Admins or {}
+Proposals = Proposals or {}
+
+Executed = Executed or {}
 end
 end
 

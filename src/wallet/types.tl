@@ -24,7 +24,7 @@ end
 global record Proposal
     proposer: string
     id: string
-    decisions: {Decision} | {}
+    decisions: {Decision}
     target: string
     data: string
     tags: {Tag} | nil
@@ -36,4 +36,3 @@ global Admins: {string: Admin} = Admins or {}
 global Proposals: {string: Proposal} = Proposals or {}
 -- proposal id -> executed bool
 global Executed: {string: boolean} = Executed or {}
-
