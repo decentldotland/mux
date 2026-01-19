@@ -261,6 +261,7 @@ local function voteProposal(msg)
    tryExecuteProposal(proposal_id)
 end
 
+
 local function tryExecuteProposal(proposal_id)
    local proposal = Proposals[proposal_id]
    local resolution = nil
@@ -290,10 +291,37 @@ local function tryExecuteProposal(proposal_id)
    end
 end
 
+local function configure(msg)
+   assert(not Configured, "wallet already configured")
+   assert(shared_helpers.isOwner(msg.From), "unauthed caller")
+   local name = shared_helpers.tagOrField(msg, "Name")
+   local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "notthatguy"
+   local admin = {
+      address = msg.From,
+      label = admin_label,
+      active = true,
+      joined = msg.Timestamp,
+      last_activity = msg.Timestamp,
+   }
+
+   if name ~= nil and name ~= "" then
+      Name = name
+   end
+
+   Admins[msg.From] = admin
+   Configured = true
+
+   shared_helpers.respond(msg, {
+      Action = "Configure-OK",
+   })
+
+end
+
 
 mod.addProposal = addProposal
 mod.voteProposal = voteProposal
 mod.tryExecuteProposal = tryExecuteProposal
+mod.configure = configure
 
 return mod
 end
@@ -381,7 +409,7 @@ require("shared.types")
 Nonce = Nonce or 0
 Threshold = Threshold or 1
 Variant = Variant or "0.1.0"
-Name = Name or "treasury.ao-multisig"
+Name = Name or "mux.ao-multisig"
 Configured = Configured or false
 
 Status = {}

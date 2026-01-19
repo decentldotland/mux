@@ -47,7 +47,7 @@ local function addProposal(msg: Msg)
 		Status = proposal_status
 	})
 end
-
+-- todo: update admin's last_activity
 local function voteProposal(msg: Msg)
     helpers.requireActiveAdmin(msg.From)
     local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
@@ -69,6 +69,7 @@ local function voteProposal(msg: Msg)
     tryExecuteProposal(proposal_id)
 end
 
+-- todo: update admin's last_activity
 local function tryExecuteProposal(proposal_id: string)
 	local proposal = Proposals[proposal_id]
     local resolution = nil
@@ -98,9 +99,36 @@ local function tryExecuteProposal(proposal_id: string)
 	end
 end
 
+local function configure(msg: Msg): nil
+    assert(not Configured, "wallet already configured")
+    assert(shared_helpers.isOwner(msg.From), "unauthed caller")
+    local name = shared_helpers.tagOrField(msg, "Name")
+    local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "notthatguy"
+    local admin: Admin = {
+        address = msg.From,
+        label = admin_label,
+        active = true,
+        joined = msg.Timestamp,
+        last_activity = msg.Timestamp
+    }
+
+    if name ~= nil and name ~= "" then
+        Name = name
+    end
+
+    Admins[msg.From] = admin
+    Configured = true
+
+	shared_helpers.respond(msg, {
+		Action = "Configure-OK"
+	})
+
+end
+
 
 mod.addProposal = addProposal
 mod.voteProposal = voteProposal
 mod.tryExecuteProposal = tryExecuteProposal
+mod.configure = configure
 
 return mod

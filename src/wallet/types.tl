@@ -3,7 +3,7 @@ require "shared.types"
 global Nonce: number = Nonce or 0
 global Threshold: number = Threshold or 1
 global Variant: string = Variant or "0.1.0"
-global Name: string = Name or "treasury.ao-multisig"
+global Name: string = Name or "mux.ao-multisig"
 global Configured: boolean = Configured or false
 
 global type Status = string
