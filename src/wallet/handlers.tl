@@ -66,43 +66,41 @@ local function voteProposal(msg: Msg)
     }
 
     table.insert(Proposals[proposal_id].decisions, decision)
-
-    local is_executable = helpers.doesMeetThreshold(Proposals[proposal_id])
-
-    if is_executable.resolved then
-        executeProposal(proposal_id, is_executable.result)
-    end
+    tryExecuteProposal(proposal_id)
 end
 
-local function executeProposal(proposal_id: string, resolution: boolean)
+local function tryExecuteProposal(proposal_id: string)
 	local proposal = Proposals[proposal_id]
+    local resolution = nil
 	assert(proposal, "proposal not found")
 	assert(not Executed[proposal_id], "proposal already executed")
 
-	if resolution then
+    local is_executable = helpers.doesMeetThreshold(proposal)
+    if is_executable.resolved then
+        resolution = is_executable.result
+    end
+
+	if resolution ~= nil and resolution then
 		local msg = {
-		Target = proposal.target,
-		Action = proposal.action,
-		Tags = proposal.tags,
-		Data = proposal.data,
-	}
+			Target = proposal.target,
+			Action = proposal.action,
+			Tags = proposal.tags,
+			Data = proposal.data,
+		}
 
-
-	ao.send(msg)
+		ao.send(msg)
 
 		Executed[proposal_id] = true
 		proposal.status = "Executed"
-	else
+	elseif resolution ~= nil and not resolution then
 		Executed[proposal_id] = true
 		proposal.status = "Rejected"
 	end
 end
 
 
-
-
 mod.addProposal = addProposal
 mod.voteProposal = voteProposal
-mod.executeProposal = executeProposal
+mod.tryExecuteProposal = tryExecuteProposal
 
 return mod
