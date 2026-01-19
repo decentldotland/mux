@@ -19,6 +19,8 @@ end
 global record Decision
     admin: string
     approved: boolean
+    voted: boolean
+    timestamp: string
 end
 
 global record Proposal
@@ -26,11 +28,18 @@ global record Proposal
     id: string
     decisions: {Decision}
     target: string
+    action: string
     data: string
     tags: {Tag} | nil
     status: Status
+    nonce: number
+    created_at: string
 end
 
+global record Resolution
+    resolved: boolean
+    result: boolean | nil
+end
 
 global Admins: {string: Admin} = Admins or {}
 global Proposals: {string: Proposal} = Proposals or {}
