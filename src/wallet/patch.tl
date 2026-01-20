@@ -82,7 +82,8 @@ local function emitMuxPatch(): nil
             Nonce = Nonce,
             Name = Name,
             Variant = Variant,
-            Configured = Configured
+            Configured = Configured,
+            OwnershipRenounced = OwnershipRenounced
         }
     })
 end

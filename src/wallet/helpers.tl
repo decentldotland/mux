@@ -54,6 +54,15 @@ local function doesMeetThreshold(proposal: Proposal): Resolution
 	return { resolved = false, result = nil }
 end
 
+local function renounceOwnership(msg: Msg): nil
+    if Owner ~= nil then
+        assert(shared_helpers.isOwner(msg.From))
+        Owner = nil
+        return
+    end
+    return
+end
+
 
 mod.isActiveAdmin = isActiveAdmin
 mod.requireActiveAdmin = requireActiveAdmin
@@ -62,5 +71,6 @@ mod.requireValidThreshold = requireValidThreshold
 mod.checkDoubleVoting = checkDoubleVoting
 mod.doesMeetThreshold = doesMeetThreshold
 mod.updateAdminLastActivity = updateAdminLastActivity
+mod.renounceOwnership = renounceOwnership
 
 return mod

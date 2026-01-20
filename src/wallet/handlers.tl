@@ -3,6 +3,7 @@ require "wallet.types"
 local shared_helpers = require "shared.helpers"
 local helpers = require "wallet.helpers"
 local codec = require "wallet.codec"
+local deps = require "shared.deps"
 local patch = require "wallet.patch"
 
 local mod = {}
@@ -156,24 +157,54 @@ local function configure(msg: Msg): nil
     assert(not Configured, "wallet already configured")
     assert(shared_helpers.isOwner(msg.From), "unauthed caller")
     local name = shared_helpers.tagOrField(msg, "Name")
-    local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "notthatguy"
-    local admin: Admin = {
-        address = msg.From,
-        label = admin_label,
-        active = true,
-        joined = msg.Timestamp,
-        last_activity = msg.Timestamp
-    }
+	local renounce_ownership = shared_helpers.tagOrField(msg, "RenounceOwnership")
+	-- Admins = '["addr1","addr2"]' or '[{"address":"addr1","label":"alice"}]'
+    local admins_raw = shared_helpers.tagOrField(msg, "Admins")
+    local threshold_raw = shared_helpers.tagOrField(msg, "Threshold")
+	local ts = msg.Timestamp or ""
 
     if name ~= nil and name ~= "" then
         Name = name
     end
 
-    Admins[msg.From] = admin
+	assert(admins_raw and admins_raw ~= "", "Admins list required")
+	assert(threshold_raw and threshold_raw ~= "", "Threshold required")
+
+    Admins = {}
+	local ok, decoded = pcall(deps.json.decode, admins_raw)
+	assert(ok and type(decoded) == "table", "Admins must be a JSON array")
+	for _, admin_entry in ipairs(decoded) do
+		local admin_address = admin_entry
+		local admin_label = "admin"
+		if type(admin_entry) == "table" then
+			admin_address = admin_entry.address
+			admin_label = admin_entry.label or "admin"
+		end
+		shared_helpers.validateArweaveAddress(admin_address)
+		assert(not Admins[admin_address], "duplicate admin address")
+		Admins[admin_address] = {
+			address = admin_address,
+			label = admin_label,
+			active = true,
+			joined = ts,
+			last_activity = ts
+		}
+	end
+
+	helpers.requireValidThreshold(threshold_raw)
+	Threshold = tonumber(threshold_raw)
+
+	if renounce_ownership ~= nil and renounce_ownership == "true" then
+		helpers.renounceOwnership(msg)
+	end
+
     Configured = true
 
 	shared_helpers.respond(msg, {
-		Action = "Configure-OK"
+		Action = "Configure-OK",
+		OwnershipRenounced = OwnershipRenounced,
+		Threshold = Threshold,
+		AdminsCount = getters.getActiveAdminsCount(),
 	})
 
 	patch.emitAdminsPatch()
