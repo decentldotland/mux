@@ -241,7 +241,6 @@ local function addProposal(msg)
       Status = proposal_status,
    })
 end
-
 local function voteProposal(msg)
    helpers.requireActiveAdmin(msg.From)
    local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
@@ -261,11 +260,39 @@ local function voteProposal(msg)
 
    table.insert(Proposals[proposal_id].decisions, decision)
    helpers.updateAdminLastActivity(msg, Admins[msg.From])
-   tryExecuteProposal(proposal_id)
+
+   shared_helpers.respond(msg, {
+      Target = msg.From,
+      Action = "Vote-OK",
+      Decision = proposal_decision,
+   })
 end
 
+local function cancelProposal(msg)
+   helpers.requireActiveAdmin(msg.From)
+   local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
+   shared_helpers.validateArweaveAddress(proposal_id)
+   assert(Proposals[proposal_id] and Proposals[proposal_id].status == "Pending", "proposal do not exist")
+   assert(not Executed[proposal_id], "proposal already executed")
+   local proposal = Proposals[proposal_id]
 
-local function tryExecuteProposal(proposal_id)
+   assert(#proposal.decisions == 1 and proposal.decisions[1].admin == msg.From, "only proposal proposer can cancel it if there are no other decisions")
+
+   proposal.status = "Cancelled"
+   Executed[proposal_id] = true
+
+   helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
+   shared_helpers.respond(msg, {
+      Target = msg.From,
+      Action = "Cancel-Proposal-OK",
+   })
+end
+
+local function tryExecuteProposal(msg)
+   local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
+   shared_helpers.validateArweaveAddress(proposal_id)
+   helpers.requireActiveAdmin(msg.From)
    local proposal = Proposals[proposal_id]
    local resolution = nil
    assert(proposal, "proposal not found")
@@ -292,6 +319,14 @@ local function tryExecuteProposal(proposal_id)
       Executed[proposal_id] = true
       proposal.status = "Rejected"
    end
+
+   helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
+   shared_helpers.respond(msg, {
+      Target = msg.From,
+      Action = "Execute-Proposal-OK",
+      Status = proposal.status,
+   })
 end
 
 local function configure(msg)
@@ -324,6 +359,7 @@ end
 mod.addProposal = addProposal
 mod.voteProposal = voteProposal
 mod.tryExecuteProposal = tryExecuteProposal
+mod.cancelProposal = cancelProposal
 mod.configure = configure
 
 return mod

@@ -49,7 +49,6 @@ local function addProposal(msg: Msg)
 		Status = proposal_status
 	})
 end
--- todo: update admin's last_activity
 local function voteProposal(msg: Msg)
     helpers.requireActiveAdmin(msg.From)
     local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
@@ -69,11 +68,39 @@ local function voteProposal(msg: Msg)
 
     table.insert(Proposals[proposal_id].decisions, decision)
     helpers.updateAdminLastActivity(msg, Admins[msg.From])
-    tryExecuteProposal(proposal_id)
+
+	shared_helpers.respond(msg, {
+		Target = msg.From,
+		Action = "Vote-OK",
+		Decision = proposal_decision
+	})
 end
 
--- todo: update admin's last_activity
-local function tryExecuteProposal(proposal_id: string)
+local function cancelProposal(msg: Msg)
+	helpers.requireActiveAdmin(msg.From)
+	local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
+	shared_helpers.validateArweaveAddress(proposal_id)
+	assert(Proposals[proposal_id] and Proposals[proposal_id].status == "Pending", "proposal do not exist")
+    assert(not Executed[proposal_id], "proposal already executed")
+	local proposal = Proposals[proposal_id]
+
+	assert(#proposal.decisions == 1 and proposal.decisions[1].admin == msg.From, "only proposal proposer can cancel it if there are no other decisions")
+
+	proposal.status = "Cancelled"
+	Executed[proposal_id] = true
+
+	helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
+	shared_helpers.respond(msg, {
+		Target = msg.From,
+		Action = "Cancel-Proposal-OK"
+	})
+end
+
+local function tryExecuteProposal(msg: Msg)
+	local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
+	shared_helpers.validateArweaveAddress(proposal_id)
+	helpers.requireActiveAdmin(msg.From)
 	local proposal = Proposals[proposal_id]
     local resolution = nil
 	assert(proposal, "proposal not found")
@@ -100,6 +127,14 @@ local function tryExecuteProposal(proposal_id: string)
 		Executed[proposal_id] = true
 		proposal.status = "Rejected"
 	end
+
+	helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
+	shared_helpers.respond(msg, {
+		Target = msg.From,
+		Action = "Execute-Proposal-OK",
+		Status = proposal.status
+	})
 end
 
 local function configure(msg: Msg): nil
@@ -132,6 +167,7 @@ end
 mod.addProposal = addProposal
 mod.voteProposal = voteProposal
 mod.tryExecuteProposal = tryExecuteProposal
+mod.cancelProposal = cancelProposal
 mod.configure = configure
 
 return mod
