@@ -88,7 +88,7 @@ function mod.findTagValue(tags, name)
 end
 
 function mod.tagOrField(msg, name)
-   local value = mod.findTagValue(msg.Tags, name) or findTagValue(msg.TagArray, name)
+   local value = mod.findTagValue(msg.Tags, name) or mod.findTagValue(msg.TagArray, name)
    if value ~= nil then
       return value
    end

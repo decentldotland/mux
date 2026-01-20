@@ -70,7 +70,7 @@ function mod.findTagValue(tags: {Tag} | nil, name: string): string | nil
 end
 
 function mod.tagOrField(msg: Msg, name: string): string | nil
-  local value = mod.findTagValue(msg.Tags, name) or findTagValue(msg.TagArray, name)
+  local value = mod.findTagValue(msg.Tags, name) or mod.findTagValue(msg.TagArray, name)
   if value ~= nil then
     return value
   end
