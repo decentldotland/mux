@@ -17,5 +17,5 @@ build-wallet:
 	LUA_PATH="build-lua/?.lua;build-lua/?/init.lua;;" \
 	$(AMALG) -s build-lua/wallet/main.lua -o build/wallet.lua \
 		wallet.main \
-		wallet.types wallet.helpers wallet.getters wallet.codec wallet.handlers \
+		wallet.types wallet.helpers wallet.getters wallet.codec wallet.handlers wallet.internal \
 		shared.types shared.deps shared.helpers

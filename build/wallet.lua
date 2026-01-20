@@ -404,6 +404,70 @@ end
 
 do
 local _ENV = _ENV
+package.preload[ "wallet.internal" ] = function( ... ) local arg = _G.arg;
+
+
+require("shared.types")
+require("wallet.types")
+local shared_helpers = require("shared.helpers")
+
+local mod = {}
+
+local function addAdmin(msg)
+   assert(msg.From == ao.id, "internal handler, invalid caller")
+   local new_admin = shared_helpers.tagOrField(msg, "AdminAddress")
+   local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "freshman"
+   shared_helpers.validateArweaveAddress(new_admin)
+
+   if Admins[new_admin] then
+
+      assert(not Admins[new_admin].active, "admin is active")
+   else
+
+      assert(not Admins[new_admin], "admin already exist")
+   end
+
+   local ts = msg.Timestamp
+
+   local admin = {
+      address = new_admin,
+      label = admin_label,
+      active = true,
+      joined = ts,
+      last_activity = ts,
+   }
+
+   Admins[new_admin] = admin
+
+   shared_helpers.respond(msg, {
+      Action = "AddAdmin-OK",
+   })
+end
+
+local function deactivateAdmin(msg)
+   assert(msg.From == ao.id, "internal handler, invalid caller")
+   local admin_address = shared_helpers.tagOrField(msg, "AdminAddress")
+   shared_helpers.validateArweaveAddress(admin_address)
+
+   assert(Admins[admin_address] and Admins[admin_address].active, "admin not found or already deactivated")
+
+   Admins[admin_address].active = false
+   Admins[admin_address].last_activity = msg.Timestamp
+
+   shared_helpers.respond(msg, {
+      Action = "DeactivateAdmin-OK",
+   })
+end
+
+mod.addAdmin = addAdmin
+mod.deactivateAdmin = deactivateAdmin
+
+return mod
+end
+end
+
+do
+local _ENV = _ENV
 package.preload[ "wallet.main" ] = function( ... ) local arg = _G.arg;
 
 end
