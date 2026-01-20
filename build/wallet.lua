@@ -233,6 +233,8 @@ local function addProposal(msg)
       created_at = msg.Timestamp or "",
    }
 
+   helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
    shared_helpers.respond(msg, {
       Action = "Propose-OK",
       ProposalId = proposal_id,
@@ -258,6 +260,7 @@ local function voteProposal(msg)
    }
 
    table.insert(Proposals[proposal_id].decisions, decision)
+   helpers.updateAdminLastActivity(msg, Admins[msg.From])
    tryExecuteProposal(proposal_id)
 end
 
@@ -349,6 +352,10 @@ local function requireConfiguredWallet()
    assert(Configured, "smart wallet not configured yet")
 end
 
+local function updateAdminLastActivity(msg, admin)
+   admin.last_activity = msg.Timestamp or ""
+end
+
 local function requireValidThreshold(threshold)
    shared_helpers.requirePositive(threshold, "new smart wallet threshold value")
    assert(tonumber(threshold) <= getters.getActiveAdminsCount(), "threshold exceeds active admins")
@@ -389,6 +396,7 @@ mod.requireConfiguredWallet = requireConfiguredWallet
 mod.requireValidThreshold = requireValidThreshold
 mod.checkDoubleVoting = checkDoubleVoting
 mod.doesMeetThreshold = doesMeetThreshold
+mod.updateAdminLastActivity = updateAdminLastActivity
 
 return mod
 end

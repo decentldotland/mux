@@ -41,6 +41,8 @@ local function addProposal(msg: Msg)
 		created_at = msg.Timestamp or ""
 	}
 
+    helpers.updateAdminLastActivity(msg, Admins[msg.From])
+
 	shared_helpers.respond(msg, {
 		Action = "Propose-OK",
 		ProposalId = proposal_id,
@@ -66,6 +68,7 @@ local function voteProposal(msg: Msg)
     }
 
     table.insert(Proposals[proposal_id].decisions, decision)
+    helpers.updateAdminLastActivity(msg, Admins[msg.From])
     tryExecuteProposal(proposal_id)
 end
 

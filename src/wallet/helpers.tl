@@ -17,6 +17,10 @@ local function requireConfiguredWallet(): nil
     assert(Configured, "smart wallet not configured yet")
 end
 
+local function updateAdminLastActivity(msg: Msg, admin: Admin)
+    admin.last_activity = msg.Timestamp or ""
+end 
+
 local function requireValidThreshold(threshold: string): nil
     shared_helpers.requirePositive(threshold, "new smart wallet threshold value")
     assert(tonumber(threshold) <= getters.getActiveAdminsCount(), "threshold exceeds active admins")
@@ -57,5 +61,6 @@ mod.requireConfiguredWallet = requireConfiguredWallet
 mod.requireValidThreshold = requireValidThreshold
 mod.checkDoubleVoting = checkDoubleVoting
 mod.doesMeetThreshold = doesMeetThreshold
+mod.updateAdminLastActivity = updateAdminLastActivity
 
 return mod
