@@ -1,6 +1,6 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const WALLET_PROCESS = "DMCjpLn49SuPTgd2QoBo-jBW8gFHqN4Y7iLE7kOfzQc";
+const WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
 const NEW_ADMIN = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 const ADMIN_LABEL = "admin-aaaaa";
 

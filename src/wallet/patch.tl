@@ -70,7 +70,7 @@ end
 local function emitExecutedPatch(): nil
     Send({
         device = "patch@1.0",
-        ["executed-patch"] = Executed
+        ["executed-proposals-patch"] = Executed
     })
 end
 

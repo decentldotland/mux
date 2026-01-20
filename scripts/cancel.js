@@ -1,7 +1,7 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const WALLET_PROCESS = "WALLET_PROCESS_ID_HERE";
-const PROPOSAL_ID = "PROPOSAL_ID_HERE";
+const WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
+const PROPOSAL_ID = "2pnS3LAUjQLVhPfle2AY1Gr-aSBFSgMVq68Mge00zZQ";
 
 requireProcessId(WALLET_PROCESS, "WALLET_PROCESS");
 requireProcessId(PROPOSAL_ID, "PROPOSAL_ID");
