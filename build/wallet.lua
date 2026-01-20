@@ -16,9 +16,9 @@ end
 do
 local _ENV = _ENV
 package.preload[ "shared.helpers" ] = function( ... ) local arg = _G.arg;
-require("utils.types")
+require("shared.types")
 
-local deps = require("utils.deps")
+local deps = require("shared.deps")
 local bint = deps.bint
 
 local mod = {}
@@ -195,6 +195,7 @@ require("wallet.types")
 local shared_helpers = require("shared.helpers")
 local helpers = require("wallet.helpers")
 local codec = require("wallet.codec")
+local getters = require("wallet.getters")
 local deps = require("shared.deps")
 local patch = require("wallet.patch")
 
@@ -250,6 +251,7 @@ local function voteProposal(msg)
    helpers.requireActiveAdmin(msg.From)
    local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
    local decision_tag = shared_helpers.tagOrField(msg, "Decision")
+   assert(decision_tag == "true" or decision_tag == "false", "Decision must be true or false")
    local proposal_decision = decision_tag == "true"
    assert(proposal_id and proposal_id ~= "", "proposal id missing")
    assert(Proposals[proposal_id] and Proposals[proposal_id].status == "Pending", "proposal do not exist")
@@ -477,6 +479,7 @@ local function renounceOwnership(msg)
    if Owner ~= nil then
       assert(shared_helpers.isOwner(msg.From), "unauthed caller")
       Owner = nil
+      OwnershipRenounced = true
       shared_helpers.respond(msg, {
          Action = "RenounceOwnership-OK",
       })

@@ -3,6 +3,7 @@ require "wallet.types"
 local shared_helpers = require "shared.helpers"
 local helpers = require "wallet.helpers"
 local codec = require "wallet.codec"
+local getters = require "wallet.getters"
 local deps = require "shared.deps"
 local patch = require "wallet.patch"
 
@@ -58,6 +59,7 @@ local function voteProposal(msg: Msg)
     helpers.requireActiveAdmin(msg.From)
     local proposal_id = shared_helpers.tagOrField(msg, "ProposalId")
     local decision_tag = shared_helpers.tagOrField(msg, "Decision")
+    assert(decision_tag == "true" or decision_tag == "false", "Decision must be true or false")
     local proposal_decision = decision_tag == "true"
 	assert(proposal_id and proposal_id ~= "", "proposal id missing")
 	assert(Proposals[proposal_id] and Proposals[proposal_id].status == "Pending", "proposal do not exist")

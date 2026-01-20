@@ -1,6 +1,6 @@
-require "utils.types"
+require "shared.types"
 
-local deps = require "utils.deps"
+local deps = require "shared.deps"
 local bint = deps.bint
 
 local mod = {}

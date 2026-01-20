@@ -1,4 +1,4 @@
-.PHONY: build build-wallet
+.PHONY: build build-wallet deploy-wallet
 
 AMALG ?= /usr/local/bin/amalg.lua
 
@@ -19,3 +19,6 @@ build-wallet:
 		wallet.main \
 		wallet.types wallet.helpers wallet.getters wallet.codec wallet.handlers wallet.internal wallet.patch \
 		shared.types shared.deps shared.helpers
+
+deploy-wallet:
+	node scripts/deploy-wallet.js

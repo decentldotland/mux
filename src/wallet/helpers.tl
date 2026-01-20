@@ -58,6 +58,7 @@ local function renounceOwnership(msg: Msg): nil
     if Owner ~= nil then
         assert(shared_helpers.isOwner(msg.From), "unauthed caller")
         Owner = nil
+        OwnershipRenounced = true
         shared_helpers.respond(msg, {
             Action = "RenounceOwnership-OK"
         })
