@@ -1,7 +1,11 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const WALLET_PROCESS = "WALLET_PROCESS_ID_HERE";
-const PROPOSAL_ID = "PROPOSAL_ID_HERE";
+const DEFAULT_WALLET_PROCESS = "92vBrWgS3fzWj7Dv5tbFg6OKGHQWrglNSI1XSr-CaSY";
+const DEFAULT_PROPOSAL_ID = "OUWsZyCRPHAGxerfvoNWRYbChGiLb8JEBUV6M0QWsjk";
+
+const [walletArg, proposalArg] = process.argv.slice(2);
+const WALLET_PROCESS = walletArg || DEFAULT_WALLET_PROCESS;
+const PROPOSAL_ID = proposalArg || DEFAULT_PROPOSAL_ID;
 
 requireProcessId(WALLET_PROCESS, "WALLET_PROCESS");
 requireProcessId(PROPOSAL_ID, "PROPOSAL_ID");

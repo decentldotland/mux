@@ -201,6 +201,29 @@ local patch = require("wallet.patch")
 
 local mod = {}
 
+local function buildTagArray(action, tags)
+   local tag_array = {
+      { name = "Action", value = action },
+   }
+   if tags then
+      if tags[1] then
+         for _, tag in ipairs(tags) do
+            local tag_name = tag.name or tag.Name
+            local tag_value = tag.value or tag.Value
+            if tag_name ~= nil and string.lower(tag_name) ~= "action" then
+               table.insert(tag_array, { name = tag_name, value = tostring(tag_value) })
+            end
+         end
+      else
+         for k, v in pairs(tags) do
+            if string.lower(k) ~= "action" then
+               table.insert(tag_array, { name = k, value = tostring(v) })
+            end
+         end
+      end
+   end
+   return tag_array
+end
 
 local function addProposal(msg)
    helpers.requireActiveAdmin(msg.From)
@@ -317,10 +340,19 @@ local function tryExecuteProposal(msg)
    end
 
    if resolution ~= nil and resolution then
+      local outgoing_tags = nil
+      if proposal.tags and proposal.tags[1] == nil then
+         outgoing_tags = proposal.tags
+         if outgoing_tags["Action"] == nil and outgoing_tags["action"] == nil then
+            outgoing_tags["Action"] = proposal.action
+         end
+      else
+         outgoing_tags = buildTagArray(proposal.action, proposal.tags)
+      end
+
       local msg = {
          Target = proposal.target,
-         Action = proposal.action,
-         Tags = proposal.tags,
+         Tags = outgoing_tags,
          Data = proposal.data,
       }
 
@@ -393,6 +425,8 @@ local function configure(msg)
    end
 
    Configured = true
+
+   shared_helpers.addAuthority(ao.id)
 
    shared_helpers.respond(msg, {
       Action = "Configure-OK",

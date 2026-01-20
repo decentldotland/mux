@@ -1,11 +1,19 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const WALLET_PROCESS = "WALLET_PROCESS_ID_HERE";
-const PROPOSAL_ID = "PROPOSAL_ID_HERE";
-const DECISION = "true";
+const DEFAULT_WALLET_PROCESS = "WALLET_PROCESS_ID_HERE";
+const DEFAULT_PROPOSAL_ID = "PROPOSAL_ID_HERE";
+const DEFAULT_DECISION = "true";
+
+const [walletArg, proposalArg, decisionArg] = process.argv.slice(2);
+const WALLET_PROCESS = walletArg || DEFAULT_WALLET_PROCESS;
+const PROPOSAL_ID = proposalArg || DEFAULT_PROPOSAL_ID;
+const DECISION = decisionArg || DEFAULT_DECISION;
 
 requireProcessId(WALLET_PROCESS, "WALLET_PROCESS");
 requireProcessId(PROPOSAL_ID, "PROPOSAL_ID");
+if (DECISION !== "true" && DECISION !== "false") {
+  throw new Error('DECISION must be "true" or "false".');
+}
 
 const { ao, signer } = getAo();
 
