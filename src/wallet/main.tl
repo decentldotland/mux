@@ -1,2 +1,3 @@
 -- todo: patch@1.0 patches
 -- todo: hook handlers with Handlers in main.tl interface
+-- todo: fix Configure to support init admin list
