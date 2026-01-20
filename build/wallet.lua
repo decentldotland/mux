@@ -195,6 +195,7 @@ require("wallet.types")
 local shared_helpers = require("shared.helpers")
 local helpers = require("wallet.helpers")
 local codec = require("wallet.codec")
+local patch = require("wallet.patch")
 
 local mod = {}
 
@@ -240,6 +241,9 @@ local function addProposal(msg)
       ProposalId = proposal_id,
       Status = proposal_status,
    })
+
+   patch.emitPendingPatch()
+   patch.emitMuxPatch()
 end
 local function voteProposal(msg)
    helpers.requireActiveAdmin(msg.From)
@@ -266,6 +270,8 @@ local function voteProposal(msg)
       Action = "Vote-OK",
       Decision = proposal_decision,
    })
+
+   patch.emitPendingPatch()
 end
 
 local function cancelProposal(msg)
@@ -287,6 +293,10 @@ local function cancelProposal(msg)
       Target = msg.From,
       Action = "Cancel-Proposal-OK",
    })
+
+   patch.emitCancelledPatch()
+   patch.emitExecutedPatch()
+   patch.emitPendingPatch()
 end
 
 local function tryExecuteProposal(msg)
@@ -315,9 +325,14 @@ local function tryExecuteProposal(msg)
 
       Executed[proposal_id] = true
       proposal.status = "Executed"
+      patch.emitExecutedPatch()
+      patch.emitPendingPatch()
    elseif resolution ~= nil and not resolution then
       Executed[proposal_id] = true
       proposal.status = "Rejected"
+      patch.emitRejectedPatch()
+      patch.emitExecutedPatch()
+      patch.emitPendingPatch()
    end
 
    helpers.updateAdminLastActivity(msg, Admins[msg.From])
@@ -353,6 +368,8 @@ local function configure(msg)
       Action = "Configure-OK",
    })
 
+   patch.emitAdminsPatch()
+   patch.emitMuxPatch()
 end
 
 
@@ -446,6 +463,7 @@ package.preload[ "wallet.internal" ] = function( ... ) local arg = _G.arg;
 require("shared.types")
 require("wallet.types")
 local shared_helpers = require("shared.helpers")
+local patch = require("wallet.patch")
 
 local mod = {}
 
@@ -478,6 +496,9 @@ local function addAdmin(msg)
    shared_helpers.respond(msg, {
       Action = "AddAdmin-OK",
    })
+
+   patch.emitAdminsPatch()
+   patch.emitMuxPatch()
 end
 
 local function deactivateAdmin(msg)
@@ -493,6 +514,9 @@ local function deactivateAdmin(msg)
    shared_helpers.respond(msg, {
       Action = "DeactivateAdmin-OK",
    })
+
+   patch.emitAdminsPatch()
+   patch.emitMuxPatch()
 end
 
 local function addAuthorityFor(msg)
@@ -505,6 +529,8 @@ local function addAuthorityFor(msg)
    shared_helpers.respond(msg, {
       Action = "Add-Authority-OK",
    })
+
+   patch.emitActiveExternalAuthority()
 end
 
 local function removeAuthorityFor(msg)
@@ -517,6 +543,8 @@ local function removeAuthorityFor(msg)
    shared_helpers.respond(msg, {
       Action = "Remove-Authority-OK",
    })
+
+   patch.emitActiveExternalAuthority()
 end
 
 mod.addAdmin = addAdmin

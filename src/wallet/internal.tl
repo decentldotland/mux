@@ -3,6 +3,7 @@
 require "shared.types"
 require "wallet.types"
 local shared_helpers = require "shared.helpers"
+local patch = require "wallet.patch"
 
 local mod = {}
 
@@ -35,6 +36,9 @@ local function addAdmin(msg: Msg): nil
 	shared_helpers.respond(msg, {
 		Action = "AddAdmin-OK"
 	})
+
+	patch.emitAdminsPatch()
+	patch.emitMuxPatch()
 end
 
 local function deactivateAdmin(msg: Msg): nil
@@ -50,6 +54,9 @@ local function deactivateAdmin(msg: Msg): nil
 	shared_helpers.respond(msg, {
 		Action = "DeactivateAdmin-OK"
 	})
+
+	patch.emitAdminsPatch()
+	patch.emitMuxPatch()
 end
 
 local function addAuthorityFor(msg: Msg)
@@ -62,6 +69,8 @@ local function addAuthorityFor(msg: Msg)
 	shared_helpers.respond(msg, {
 		Action = "Add-Authority-OK"
 	})
+
+	patch.emitActiveExternalAuthority()
 end
 
 local function removeAuthorityFor(msg: Msg)
@@ -74,6 +83,8 @@ local function removeAuthorityFor(msg: Msg)
 	shared_helpers.respond(msg, {
 		Action = "Remove-Authority-OK"
 	})
+
+	patch.emitActiveExternalAuthority()
 end
 
 mod.addAdmin = addAdmin

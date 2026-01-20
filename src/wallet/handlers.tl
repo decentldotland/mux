@@ -3,6 +3,7 @@ require "wallet.types"
 local shared_helpers = require "shared.helpers"
 local helpers = require "wallet.helpers"
 local codec = require "wallet.codec"
+local patch = require "wallet.patch"
 
 local mod = {}
 
@@ -48,6 +49,9 @@ local function addProposal(msg: Msg)
 		ProposalId = proposal_id,
 		Status = proposal_status
 	})
+
+	patch.emitPendingPatch()
+	patch.emitMuxPatch()
 end
 local function voteProposal(msg: Msg)
     helpers.requireActiveAdmin(msg.From)
@@ -74,6 +78,8 @@ local function voteProposal(msg: Msg)
 		Action = "Vote-OK",
 		Decision = proposal_decision
 	})
+
+	patch.emitPendingPatch()
 end
 
 local function cancelProposal(msg: Msg)
@@ -95,6 +101,10 @@ local function cancelProposal(msg: Msg)
 		Target = msg.From,
 		Action = "Cancel-Proposal-OK"
 	})
+
+	patch.emitCancelledPatch()
+	patch.emitExecutedPatch()
+	patch.emitPendingPatch()
 end
 
 local function tryExecuteProposal(msg: Msg)
@@ -123,9 +133,14 @@ local function tryExecuteProposal(msg: Msg)
 
 		Executed[proposal_id] = true
 		proposal.status = "Executed"
+		patch.emitExecutedPatch()
+		patch.emitPendingPatch()
 	elseif resolution ~= nil and not resolution then
 		Executed[proposal_id] = true
 		proposal.status = "Rejected"
+		patch.emitRejectedPatch()
+		patch.emitExecutedPatch()
+		patch.emitPendingPatch()
 	end
 
 	helpers.updateAdminLastActivity(msg, Admins[msg.From])
@@ -161,6 +176,8 @@ local function configure(msg: Msg): nil
 		Action = "Configure-OK"
 	})
 
+	patch.emitAdminsPatch()
+	patch.emitMuxPatch()
 end
 
 
