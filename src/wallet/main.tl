@@ -1,4 +1,2 @@
--- todo: cancelled proposal: by proposer and if no other votes exist
--- todo: separate forced tryExecuteProposal from voteProposal
 -- todo: patch@1.0 patches
--- todo: add add-Authority remove-Authority to internal.tl
+-- todo: hook handlers with Handlers in main.tl interface

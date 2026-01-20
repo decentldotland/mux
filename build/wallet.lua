@@ -495,8 +495,34 @@ local function deactivateAdmin(msg)
    })
 end
 
+local function addAuthorityFor(msg)
+   assert(msg.From == ao.id, "internal handler, invalid caller")
+   local external_process_id = shared_helpers.tagOrField(msg, "ExternalProcessId")
+   shared_helpers.validateArweaveAddress(external_process_id)
+
+   shared_helpers.addAuthority(external_process_id)
+
+   shared_helpers.respond(msg, {
+      Action = "Add-Authority-OK",
+   })
+end
+
+local function removeAuthorityFor(msg)
+   assert(msg.From == ao.id, "internal handler, invalid caller")
+   local external_process_id = shared_helpers.tagOrField(msg, "ExternalProcessId")
+   shared_helpers.validateArweaveAddress(external_process_id)
+
+   shared_helpers.removeAuthority(external_process_id)
+
+   shared_helpers.respond(msg, {
+      Action = "Remove-Authority-OK",
+   })
+end
+
 mod.addAdmin = addAdmin
 mod.deactivateAdmin = deactivateAdmin
+mod.addAuthorityFor = addAuthorityFor
+mod.removeAuthorityFor = removeAuthorityFor
 
 return mod
 end
