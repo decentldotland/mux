@@ -1,5 +1,18 @@
 do
 local _ENV = _ENV
+package.preload[ "shared.constants" ] = function( ... ) local arg = _G.arg;
+local mod = {}
+
+local PUSH_NODE_AUTHORITY_ADDR = "YUsEnCSlxvOMxRd1qG6rkaPwMgi3xOorfDfYJoMDndA"
+
+mod.PUSH_NODE_AUTHORITY_ADDR = PUSH_NODE_AUTHORITY_ADDR
+
+return mod
+end
+end
+
+do
+local _ENV = _ENV
 package.preload[ "shared.deps" ] = function( ... ) local arg = _G.arg;
 local mod = {}
 
@@ -193,6 +206,7 @@ package.preload[ "wallet.handlers" ] = function( ... ) local arg = _G.arg;
 require("shared.types")
 require("wallet.types")
 local shared_helpers = require("shared.helpers")
+local constants = require("shared.constants")
 local helpers = require("wallet.helpers")
 local codec = require("wallet.codec")
 local getters = require("wallet.getters")
@@ -427,6 +441,7 @@ local function configure(msg)
    Configured = true
 
    shared_helpers.addAuthority(ao.id)
+   shared_helpers.addAuthority(constants.PUSH_NODE_AUTHORITY_ADDR)
 
    shared_helpers.respond(msg, {
       Action = "Configure-OK",

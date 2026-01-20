@@ -1,6 +1,7 @@
 require "shared.types"
 require "wallet.types"
 local shared_helpers = require "shared.helpers"
+local constants = require "shared.constants"
 local helpers = require "wallet.helpers"
 local codec = require "wallet.codec"
 local getters = require "wallet.getters"
@@ -235,6 +236,7 @@ local function configure(msg: Msg): nil
     Configured = true
 
 	shared_helpers.addAuthority(ao.id)
+	shared_helpers.addAuthority(constants.PUSH_NODE_AUTHORITY_ADDR)
 
 	shared_helpers.respond(msg, {
 		Action = "Configure-OK",

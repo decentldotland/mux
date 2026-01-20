@@ -18,7 +18,7 @@ build-wallet:
 	$(AMALG) -s build-lua/wallet/main.lua -o build/wallet.lua \
 		wallet.main \
 		wallet.types wallet.helpers wallet.getters wallet.codec wallet.handlers wallet.internal wallet.patch \
-		shared.types shared.deps shared.helpers
+		shared.types shared.deps shared.helpers shared.constants
 
 deploy-wallet:
 	node scripts/deploy-wallet.js

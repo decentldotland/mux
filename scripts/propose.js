@@ -1,7 +1,7 @@
   import { getAo, requireProcessId } from "./lib.js";
 
-  const WALLET_PROCESS = "92vBrWgS3fzWj7Dv5tbFg6OKGHQWrglNSI1XSr-CaSY";
-  const TOKEN_PROCESS = "9LlXbsC0xhk8v-piccUnK0Viik4sPADFBs0nAz5y2BM";
+  const WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
+  const TOKEN_PROCESS = "9N0mCvF4Q_jJs7XVuj34E5x6aYQGP9iTWpz955BHmLA";
   const RECIPIENT = "vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0";
   const QUANTITY = "1";
 
