@@ -48,6 +48,9 @@ local function deactivateAdmin(msg: Msg): nil
 
     assert(Admins[admin_address] and Admins[admin_address].active, "admin not found or already deactivated")
 
+    local active_count = getters.getActiveAdminsCount()
+    assert(Threshold <= active_count - 1, "threshold exceeds active admins")
+
     Admins[admin_address].active = false
     Admins[admin_address].last_activity = msg.Timestamp
 

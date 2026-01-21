@@ -364,13 +364,13 @@ local function tryExecuteProposal(msg)
          outgoing_tags = buildTagArray(proposal.action, proposal.tags)
       end
 
-      local msg = {
+      local mux_msg = {
          Target = proposal.target,
          Tags = outgoing_tags,
          Data = proposal.data,
       }
 
-      ao.send(msg)
+      ao.send(mux_msg)
 
       Executed[proposal_id] = true
       proposal.status = "Executed"
@@ -603,6 +603,9 @@ local function deactivateAdmin(msg)
    shared_helpers.validateArweaveAddress(admin_address)
 
    assert(Admins[admin_address] and Admins[admin_address].active, "admin not found or already deactivated")
+
+   local active_count = getters.getActiveAdminsCount()
+   assert(Threshold <= active_count - 1, "threshold exceeds active admins")
 
    Admins[admin_address].active = false
    Admins[admin_address].last_activity = msg.Timestamp

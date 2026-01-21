@@ -159,13 +159,13 @@ local function tryExecuteProposal(msg: Msg)
 			outgoing_tags = buildTagArray(proposal.action, proposal.tags)
 		end
 
-		local msg = {
+		local mux_msg = {
 			Target = proposal.target,
 			Tags = outgoing_tags,
 			Data = proposal.data,
 		}
 
-		ao.send(msg)
+		ao.send(mux_msg)
 
 		Executed[proposal_id] = true
 		proposal.status = "Executed"
