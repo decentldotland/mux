@@ -74,16 +74,20 @@ local function emitExecutedPatch(): nil
     })
 end
 
-local function emitMuxPatch(): nil
+local function emitMuxPatch(msg: Msg | nil): nil
+    local ts = (msg and msg.Timestamp) or (Msg and Msg.Timestamp) or MuxLastActivity or ""
+    MuxLastActivity = tostring(ts)
     Send({
         device = "patch@1.0",
-        ["mux-state"] = {
+        ["mux-state-patch"] = {
             Threshold = Threshold,
             Nonce = Nonce,
             Name = Name,
             Variant = Variant,
             Configured = Configured,
-            OwnershipRenounced = OwnershipRenounced
+            OwnershipRenounced = OwnershipRenounced,
+            Deployer = Deployer,
+            MuxLastActivity = MuxLastActivity or ""
         }
     })
 end

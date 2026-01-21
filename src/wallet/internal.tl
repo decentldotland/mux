@@ -38,7 +38,7 @@ local function addAdmin(msg: Msg): nil
 	})
 
 	patch.emitAdminsPatch()
-	patch.emitMuxPatch()
+	patch.emitMuxPatch(msg)
 end
 
 local function deactivateAdmin(msg: Msg): nil
@@ -59,7 +59,7 @@ local function deactivateAdmin(msg: Msg): nil
 	})
 
 	patch.emitAdminsPatch()
-	patch.emitMuxPatch()
+	patch.emitMuxPatch(msg)
 end
 
 local function addAuthorityFor(msg: Msg)

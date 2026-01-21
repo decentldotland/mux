@@ -282,7 +282,7 @@ local function addProposal(msg)
    })
 
    patch.emitPendingPatch()
-   patch.emitMuxPatch()
+   patch.emitMuxPatch(msg)
 end
 local function voteProposal(msg)
    helpers.requireActiveAdmin(msg.From)
@@ -439,7 +439,7 @@ local function configure(msg)
    end
 
    Configured = true
-
+   Deployer = msg.From
    shared_helpers.addAuthority(ao.id)
    shared_helpers.addAuthority(constants.PUSH_NODE_AUTHORITY_ADDR)
 
@@ -451,7 +451,7 @@ local function configure(msg)
    })
 
    patch.emitAdminsPatch()
-   patch.emitMuxPatch()
+   patch.emitMuxPatch(msg)
 end
 
 
@@ -594,7 +594,7 @@ local function addAdmin(msg)
    })
 
    patch.emitAdminsPatch()
-   patch.emitMuxPatch()
+   patch.emitMuxPatch(msg)
 end
 
 local function deactivateAdmin(msg)
@@ -615,7 +615,7 @@ local function deactivateAdmin(msg)
    })
 
    patch.emitAdminsPatch()
-   patch.emitMuxPatch()
+   patch.emitMuxPatch(msg)
 end
 
 local function addAuthorityFor(msg)
@@ -809,16 +809,20 @@ local function emitExecutedPatch()
    })
 end
 
-local function emitMuxPatch()
+local function emitMuxPatch(msg)
+   local ts = (msg and msg.Timestamp) or (Msg and Msg.Timestamp) or MuxLastActivity or ""
+   MuxLastActivity = tostring(ts)
    Send({
       device = "patch@1.0",
-      ["mux-state"] = {
+      ["mux-state-patch"] = {
          Threshold = Threshold,
          Nonce = Nonce,
          Name = Name,
          Variant = Variant,
          Configured = Configured,
          OwnershipRenounced = OwnershipRenounced,
+         Deployer = Deployer,
+         MuxLastActivity = MuxLastActivity or "",
       },
    })
 end
@@ -857,6 +861,8 @@ Variant = Variant or "0.1.0"
 Name = Name or "mux.ao-multisig"
 Configured = Configured or false
 OwnershipRenounced = OwnershipRenounced or false
+Deployer = Deployer or ""
+MuxLastActivity = MuxLastActivity or ""
 
 Status = {}
 

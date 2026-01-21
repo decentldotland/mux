@@ -77,7 +77,7 @@ local function addProposal(msg: Msg)
 	})
 
 	patch.emitPendingPatch()
-	patch.emitMuxPatch()
+	patch.emitMuxPatch(msg)
 end
 local function voteProposal(msg: Msg)
     helpers.requireActiveAdmin(msg.From)
@@ -234,7 +234,7 @@ local function configure(msg: Msg): nil
 	end
 
     Configured = true
-
+	Deployer = msg.From
 	shared_helpers.addAuthority(ao.id)
 	shared_helpers.addAuthority(constants.PUSH_NODE_AUTHORITY_ADDR)
 
@@ -246,7 +246,7 @@ local function configure(msg: Msg): nil
 	})
 
 	patch.emitAdminsPatch()
-	patch.emitMuxPatch()
+	patch.emitMuxPatch(msg)
 end
 
 

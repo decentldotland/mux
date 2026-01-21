@@ -6,6 +6,8 @@ global Variant: string = Variant or "0.1.0"
 global Name: string = Name or "mux.ao-multisig"
 global Configured: boolean = Configured or false
 global OwnershipRenounced: boolean = OwnershipRenounced or false
+global Deployer: string = Deployer or ""
+global MuxLastActivity: string = MuxLastActivity or ""
 
 global type Status = string
 

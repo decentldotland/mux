@@ -1,6 +1,7 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
+// const WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
+const WALLET_PROCESS = "FdQMiB_VC9XnNK_gFCCazkMPA8wMKmXMuIGsNaqXC2c"
 const WALLET_NAME = "mux-wallet";
 const ADMINS_JSON = '["LgvXR-b31qXUT4QBwqoP8MJJcDiRYfGDODjD7FYnV6o","vZY2XY1RD9HIfWi8ift-1_DnHLDadZMWrufSh-_rKF0"]';
 const THRESHOLD = "1";
