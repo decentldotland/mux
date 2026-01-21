@@ -37,8 +37,9 @@ Internal (mux wallet related state setters):
 - `AddAuthority`
 - `RemoveAuthority`
 
-Proposal payload (msg.Data JSON):
-```
+Proposal payload (`msg.Data` JSON):
+
+```json
 {
   "Target": "<process-id>",
   "Action": "<action>",
@@ -60,3 +61,13 @@ requires a `wallet.json` file at the root of the repo
 ```bash
 make deploy-wallet
 ```
+
+## Important N.Bs
+
+* `mux` is under unaudited test releases, do not use it in production
+* `mux` will be usable along popular ao network tokens (e.g. $AO and $PI) once those tokens are on mainnet's greezones - authority UX issues
+* do not expect stability before a public stable release, bug reports are welcome, please open an issue!
+
+
+## License
+This project is licensed under the [BSL 1.1](./LICENSE) license
