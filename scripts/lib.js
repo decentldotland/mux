@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const WALLET_PATH = path.join(__dirname, "..", "darwin.json");
+const WALLET_PATH = path.join(__dirname, "..", "wallet.json");
 const AO_URL = "https://push.forward.computer";
 const SCHEDULER = "n_XZJhUnmldNFo4dhajoPZWhBXuJk-OcQr5JQ49c4Zo";
 
