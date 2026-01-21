@@ -1,7 +1,7 @@
 import { getAo, requireProcessId } from "./lib.js";
 
-const DEFAULT_WALLET_PROCESS = "VkX6avkS4PlCKOTTPy04QkGqlFQFT_AiH1u_WdzMLII";
-const DEFAULT_PROPOSAL_ID = "MCa-oOe9aJBlFTgcwqg8NWx6Fzj4pQZ0lSXiBBVv44c";
+const DEFAULT_WALLET_PROCESS = "PQaxNfVJg8klWnqZgfc7joyNzDK-o5auWETQS8bFvHk";
+const DEFAULT_PROPOSAL_ID = "-qwvvx_SOV6HY2I2dLc8H4F8loytzcloYfYV4bTxhsE";
 
 const [walletArg, proposalArg] = process.argv.slice(2);
 const WALLET_PROCESS = walletArg || DEFAULT_WALLET_PROCESS;

@@ -281,6 +281,7 @@ local function addProposal(msg)
       Status = proposal_status,
    })
 
+   patch.emitFullProposalsPatch()
    patch.emitPendingPatch()
    patch.emitMuxPatch(msg)
 end
@@ -311,6 +312,7 @@ local function voteProposal(msg)
       Decision = proposal_decision,
    })
 
+   patch.emitFullProposalsPatch()
    patch.emitPendingPatch()
 end
 
@@ -334,6 +336,7 @@ local function cancelProposal(msg)
       Action = "Cancel-Proposal-OK",
    })
 
+   patch.emitFullProposalsPatch()
    patch.emitCancelledPatch()
    patch.emitExecutedPatch()
    patch.emitPendingPatch()
@@ -374,11 +377,13 @@ local function tryExecuteProposal(msg)
 
       Executed[proposal_id] = true
       proposal.status = "Executed"
+      patch.emitFullProposalsPatch()
       patch.emitExecutedPatch()
       patch.emitPendingPatch()
    elseif resolution ~= nil and not resolution then
       Executed[proposal_id] = true
       proposal.status = "Rejected"
+      patch.emitFullProposalsPatch()
       patch.emitRejectedPatch()
       patch.emitExecutedPatch()
       patch.emitPendingPatch()
