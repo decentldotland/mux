@@ -122,7 +122,11 @@ local function cancelProposal(msg: Msg)
 	assert(#proposal.decisions == 1 and proposal.decisions[1].admin == msg.From, "only proposal proposer can cancel it if there are no other decisions")
 
 	proposal.status = "Cancelled"
-	Executed[proposal_id] = true
+	Executed[proposal_id] = {
+		is_executed = false,
+		executed_at = msg.Timestamp,
+		outcome = "Cancelled"
+	}
 
 	helpers.updateAdminLastActivity(msg, Admins[msg.From])
 
@@ -170,13 +174,24 @@ local function tryExecuteProposal(msg: Msg)
 
 		ao.send(mux_msg)
 
-		Executed[proposal_id] = true
+		local execution_result: ExecutedEntry = {
+			is_executed = true,
+			executed_at = msg.Timestamp,
+			outcome = "Executed"
+		}
+
+		Executed[proposal_id] = execution_result
 		proposal.status = "Executed"
 		patch.emitFullProposalsPatch()
 		patch.emitExecutedPatch()
 		patch.emitPendingPatch()
 	elseif resolution ~= nil and not resolution then
-		Executed[proposal_id] = true
+		local execution_result: ExecutedEntry = {
+			is_executed = false,
+			executed_at = msg.Timestamp,
+			outcome = "Rejected"
+		}
+		Executed[proposal_id] = execution_result
 		proposal.status = "Rejected"
 		patch.emitFullProposalsPatch()
 		patch.emitRejectedPatch()

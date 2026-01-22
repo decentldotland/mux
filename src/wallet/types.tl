@@ -2,7 +2,7 @@ require "shared.types"
 
 global Nonce: number = Nonce or 0
 global Threshold: number = Threshold or 1
-global Variant: string = Variant or "0.1.0"
+global Variant: string = Variant or "0.1.1"
 global Name: string = Name or "mux.ao-multisig"
 global Configured: boolean = Configured or false
 global OwnershipRenounced: boolean = OwnershipRenounced or false
@@ -44,7 +44,13 @@ global record Resolution
     result: boolean | nil
 end
 
+global record ExecutedEntry
+    is_executed: boolean
+    executed_at: string | nil
+    outcome: Status
+end
+
 global Admins: {string: Admin} = Admins or {}
 global Proposals: {string: Proposal} = Proposals or {}
--- proposal id -> executed bool
-global Executed: {string: boolean} = Executed or {}
+-- proposal id -> ExecutedEntry
+global Executed: {string: ExecutedEntry} = Executed or {}
