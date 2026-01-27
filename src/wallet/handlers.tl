@@ -219,6 +219,7 @@ local function configure(msg: Msg): nil
 	local ts = msg.Timestamp or ""
 
     if name ~= nil and name ~= "" then
+		shared_helpers.checkStringLenBoundaries(name, 1, 50)
         Name = name
     end
 
@@ -234,6 +235,7 @@ local function configure(msg: Msg): nil
 		if type(admin_entry) == "table" then
 			admin_address = admin_entry.address
 			admin_label = admin_entry.label or "admin"
+			shared_helpers.checkStringLenBoundaries(admin_label, 1, 50)
 		end
 		shared_helpers.validateArweaveAddress(admin_address)
 		assert(not Admins[admin_address], "duplicate admin address")

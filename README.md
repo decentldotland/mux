@@ -1,8 +1,10 @@
 ## About
 
-mux - multiplexer is a general purpose multisig wallet for ao mainnet.
+mux - multiplexer is a general purpose multisig wallet for ao mainnet - web interface available at [treasury.ao](https://treasury.ao)
 
-> status: unaudited wip mvp
+![](https://load0.network/resolve/0x620eeca6246c1c167853c7cb1604f47ec9dbce79b16a4d2c95bac58219fc92d2)
+
+> status: unaudited wip mvp - DO NOT USE IT IN ANY PRODUCTION ENVIROMENT
 
 ## Architecture
 

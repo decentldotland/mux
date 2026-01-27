@@ -12,6 +12,7 @@ local function addAdmin(msg: Msg): nil
     local new_admin = shared_helpers.tagOrField(msg, "AdminAddress")
     local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "freshman"
     shared_helpers.validateArweaveAddress(new_admin)
+    shared_helpers.checkStringLenBoundaries(admin_label, 1, 50)
 
     if Admins[new_admin] then
         -- admin exist but is disactivated 

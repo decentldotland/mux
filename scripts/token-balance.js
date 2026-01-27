@@ -1,7 +1,7 @@
 import { getAo, requireProcessId } from "./lib.js";
 
 const TOKEN_PROCESS = "-J0MsAvcVvuxSIjCu0MKny_VFQOogYH_vMpnDauZ_B4";
-const ACCOUNT = "LgvXR-b31qXUT4QBwqoP8MJJcDiRYfGDODjD7FYnV6o";
+const ACCOUNT = "ENlsWruVNCZRCW5asmzkNgigeyKhVzu5jAo3HpRpn7k";
 
 requireProcessId(TOKEN_PROCESS, "TOKEN_PROCESS");
 requireProcessId(ACCOUNT, "ACCOUNT");

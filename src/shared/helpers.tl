@@ -78,7 +78,14 @@ function mod.tagOrField(msg: Msg, name: string): string | nil
 end
 
 function mod.validateArweaveAddress(address: string)
-  assert(address ~= nil and address ~= "", "token address must be valid ao process id")
+  assert(address ~= nil and address ~= "" and #address == 43, "token address must be valid ao process id")
+end
+
+function mod.checkStringLenBoundaries(value: string, min_len: number, max_len: number): nil
+  assert(value ~= nil, "value is required")
+  assert(type(value) == "string", "value must be string")
+  local len = #value
+  assert(len >= min_len and len <= max_len, "value length out of bounds")
 end
 
 function mod.requirePositive(quantity: string, name: string)

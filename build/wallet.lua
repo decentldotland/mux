@@ -109,7 +109,14 @@ function mod.tagOrField(msg, name)
 end
 
 function mod.validateArweaveAddress(address)
-   assert(address ~= nil and address ~= "", "token address must be valid ao process id")
+   assert(address ~= nil and address ~= "" and #address == 43, "token address must be valid ao process id")
+end
+
+function mod.checkStringLenBoundaries(value, min_len, max_len)
+   assert(value ~= nil, "value is required")
+   assert(type(value) == "string", "value must be string")
+   local len = #value
+   assert(len >= min_len and len <= max_len, "value length out of bounds")
 end
 
 function mod.requirePositive(quantity, name)
@@ -424,6 +431,7 @@ local function configure(msg)
    local ts = msg.Timestamp or ""
 
    if name ~= nil and name ~= "" then
+      shared_helpers.checkStringLenBoundaries(name, 1, 50)
       Name = name
    end
 
@@ -439,6 +447,7 @@ local function configure(msg)
       if type(admin_entry) == "table" then
          admin_address = admin_entry.address
          admin_label = admin_entry.label or "admin"
+         shared_helpers.checkStringLenBoundaries(admin_label, 1, 50)
       end
       shared_helpers.validateArweaveAddress(admin_address)
       assert(not Admins[admin_address], "duplicate admin address")
@@ -588,6 +597,7 @@ local function addAdmin(msg)
    local new_admin = shared_helpers.tagOrField(msg, "AdminAddress")
    local admin_label = shared_helpers.tagOrField(msg, "AdminLabel") or "freshman"
    shared_helpers.validateArweaveAddress(new_admin)
+   shared_helpers.checkStringLenBoundaries(admin_label, 1, 50)
 
    if Admins[new_admin] then
 
