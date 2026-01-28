@@ -54,6 +54,8 @@ Proposal payload (`msg.Data` JSON):
 
 ```bash
 make build-wallet
+# or
+make build
 ```
 
 ## Deploy onchain
@@ -70,6 +72,23 @@ make deploy-wallet
 * `mux` will be usable along popular ao network tokens (e.g. $AO and $PI) once those tokens are on mainnet's greezones - authority UX issues
 * do not expect stability before a public stable release, bug reports are welcome, please open an issue!
 
+## Test scripts
+check [scripts](./scripts/) for JS `@permaweb/aoconnect` test scripts
+
+## HyperPATHs
+The `patch@1.0` HyperPATHs that are exposed from mux v0.1.3 are:
+
+* `admins`: exposes the `admins-patch` under `admins` hyperpath 
+
+```bash
+curl https://app-1.forward.computer/<PROCESS_ID>~process@1.0/now/cache/admins/serialize~json@1.0
+```
+
+* `mux_state`: exporer the `mux-state-patch` table under the `mux_state` hyperpath
+
+```bash
+curl https://app-1.forward.computer/<PROCESS_ID>~process@1.0/now/cache/mux_state/serialize~json@1.0
+```
 
 ## License
 This project is licensed under the [BSL 1.1](./LICENSE) license
