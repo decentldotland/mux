@@ -8,6 +8,8 @@ local mod = {}
 local function emitAdminsPatch(): nil
     Send({
         device = "patch@1.0",
+        cache = { admins = Admins },
+        -- kept for v0.1.2 backward compatibility
         ["admins-patch"] = Admins
     })
 end
@@ -77,18 +79,20 @@ end
 local function emitMuxPatch(msg: Msg | nil): nil
     local ts = (msg and msg.Timestamp) or (Msg and Msg.Timestamp) or MuxLastActivity or ""
     MuxLastActivity = tostring(ts)
+    local patch_res = {
+        Threshold = Threshold,
+        Nonce = Nonce,
+        Name = Name,
+        Variant = Variant,
+        Configured = Configured,
+        OwnershipRenounced = OwnershipRenounced,
+        Deployer = Deployer,
+        MuxLastActivity = MuxLastActivity or ""
+    }
     Send({
         device = "patch@1.0",
-        ["mux-state-patch"] = {
-            Threshold = Threshold,
-            Nonce = Nonce,
-            Name = Name,
-            Variant = Variant,
-            Configured = Configured,
-            OwnershipRenounced = OwnershipRenounced,
-            Deployer = Deployer,
-            MuxLastActivity = MuxLastActivity or ""
-        }
+        cache = { mux_state = patch_res },
+        ["mux-state-patch"] = patch_res
     })
 end
 

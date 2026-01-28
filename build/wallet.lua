@@ -773,6 +773,8 @@ local mod = {}
 local function emitAdminsPatch()
    Send({
       device = "patch@1.0",
+      cache = { admins = Admins },
+
       ["admins-patch"] = Admins,
    })
 end
@@ -842,18 +844,20 @@ end
 local function emitMuxPatch(msg)
    local ts = (msg and msg.Timestamp) or (Msg and Msg.Timestamp) or MuxLastActivity or ""
    MuxLastActivity = tostring(ts)
+   local patch_res = {
+      Threshold = Threshold,
+      Nonce = Nonce,
+      Name = Name,
+      Variant = Variant,
+      Configured = Configured,
+      OwnershipRenounced = OwnershipRenounced,
+      Deployer = Deployer,
+      MuxLastActivity = MuxLastActivity or "",
+   }
    Send({
       device = "patch@1.0",
-      ["mux-state-patch"] = {
-         Threshold = Threshold,
-         Nonce = Nonce,
-         Name = Name,
-         Variant = Variant,
-         Configured = Configured,
-         OwnershipRenounced = OwnershipRenounced,
-         Deployer = Deployer,
-         MuxLastActivity = MuxLastActivity or "",
-      },
+      cache = { mux_state = patch_res },
+      ["mux-state-patch"] = patch_res,
    })
 end
 
@@ -887,7 +891,7 @@ require("shared.types")
 
 Nonce = Nonce or 0
 Threshold = Threshold or 1
-Variant = Variant or "0.1.1"
+Variant = Variant or "0.1.3"
 Name = Name or "mux.ao-multisig"
 Configured = Configured or false
 OwnershipRenounced = OwnershipRenounced or false
