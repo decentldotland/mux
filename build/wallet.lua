@@ -109,7 +109,7 @@ function mod.tagOrField(msg, name)
 end
 
 function mod.validateArweaveAddress(address)
-   assert(address ~= nil and address ~= "" and #address == 43, "token address must be valid ao process id")
+   assert(address ~= nil and address ~= "" and #address == 43 and string.match(address, "^[A-Za-z0-9_-]+$"), "token address must be valid ao process id")
 end
 
 function mod.checkStringLenBoundaries(value, min_len, max_len)
@@ -891,7 +891,7 @@ require("shared.types")
 
 Nonce = Nonce or 0
 Threshold = Threshold or 1
-Variant = Variant or "0.1.3"
+Variant = Variant or "0.1.4"
 Name = Name or "mux.ao-multisig"
 Configured = Configured or false
 OwnershipRenounced = OwnershipRenounced or false

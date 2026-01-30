@@ -78,7 +78,7 @@ function mod.tagOrField(msg: Msg, name: string): string | nil
 end
 
 function mod.validateArweaveAddress(address: string)
-  assert(address ~= nil and address ~= "" and #address == 43, "token address must be valid ao process id")
+  assert(address ~= nil and address ~= "" and #address == 43 and string.match(address, "^[A-Za-z0-9_-]+$"), "token address must be valid ao process id")
 end
 
 function mod.checkStringLenBoundaries(value: string, min_len: number, max_len: number): nil
